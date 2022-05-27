@@ -50,28 +50,49 @@
     <div class="slidecontainer">
         <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
     </div>
+    <canvas style="border-style: solid;"></canvas>
 </body>
-<script src="http://192.168.0.10:3000/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io("http://192.168.0.10:3000");
-
-    let domain = (new URL(window.location.href));
+    let mouseDown = false
+    const domain = (new URL(window.location.href));
     const range = document.getElementById("myRange")
-    let clickDown = false
-
+    
+    const socket = io(domain.origin);
     socket.on("connect", () => {
         socket.emit("purpose", "slider")
     })
 
-    range.addEventListener("mousedown", () => clickDown = true)
-    range.addEventListener("mouseup", () => clickDown = false)
     
+    // range.addEventListener("mousedown", () => clickDown = true)
+    // range.addEventListener("mouseup", () => clickDown = false)
+    const canvas = document.querySelector("canvas")
+    canvas.width = 600
+    canvas.height = 600
+
+    canvas.addEventListener("mousedown", () => mouseDown = true)
+    canvas.addEventListener("mouseup", () => mouseDown = false)
+
     animate()
     function animate () {
         window.requestAnimationFrame(animate)
+        let listener
+        if(mouseDown) {
+            listener = canvas.addEventListener("mousemove", (e) => {
+                socket.emit("canvas-pos", getMousePos(canvas, e))
+            })
+        } else {
+            canvas.removeEventListener("mousemove", listener)
+        }
+    
+    }
 
-        if(clickDown) socket.emit("slider-pos", range.value)
-        else socket.emit("slider-pos", range.value)
+    function getMousePos(canvas, evt) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
     }
 
 </script>

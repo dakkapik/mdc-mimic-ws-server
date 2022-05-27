@@ -1,9 +1,13 @@
 module.exports = (io) => {
     io.on("connection", (socket) => {
-        socket.emit("purpose")
 
-        socket.on("name", (name) => {
-            console.log("THIS NAME", name)
+        socket.on("purpose", (purpose) => {
+            console.log("> ", purpose)
         })
-    })
+
+        socket.on("canvas-pos", (pos) => {
+            io.emit("pos", pos)
+        })
+
+    });
 }
