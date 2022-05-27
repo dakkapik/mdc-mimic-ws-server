@@ -4,8 +4,7 @@ function angleToPercent(angle) {
   return Math.floor((angle/MAX_ANGLE) * 100);
 }
 
-var curAngle = 0; 
-
+var curAngle = 0;
 var direction = 1;
 setInterval(() => {
   piblaster.setServoPwm("P1-11", angleToPercent(curAngle) + "%");
