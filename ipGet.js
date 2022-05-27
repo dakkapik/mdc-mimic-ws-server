@@ -14,9 +14,10 @@ module.exports = () => {
             }
         }
     }
+    
     if(results.Ethernet){
         return results.Ethernet[0]
     } else {
-        return results.IPv4[0]
+        return results['Wi-Fi'][0]
     }
 }
